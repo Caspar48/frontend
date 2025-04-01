@@ -2,6 +2,12 @@
   <div class="min-h-screen flex flex-col bg-gray-50">
     <div class="flex-grow flex items-center justify-center py-12 px-4">
       <div class="w-full max-w-md">
+        <!-- 添加錯誤提示 -->
+        <div v-if="error || authStore.error" 
+             class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+          {{ error || authStore.error }}
+        </div>
+
         <!-- 註冊表單卡片 -->
         <div class="bg-white p-8 rounded-xl shadow-lg">
           <div class="text-center mb-8">
@@ -124,23 +130,19 @@
             <!-- 註冊按鈕 -->
             <button 
               type="submit"
+              :disabled="authStore.loading"
               class="w-full bg-[#53b17b] text-white py-3 px-4 rounded-lg text-lg font-semibold transform transition-all duration-200 shadow-md hover:shadow-lg relative border-2 border-transparent"
               :class="{
-                'animate-pulse-strong': isFormValid,
-                'hover:scale-[1.02]': isFormValid
+                'animate-pulse-strong': isFormValid && !authStore.loading,
+                'hover:scale-[1.02]': isFormValid && !authStore.loading,
+                'opacity-75 cursor-not-allowed': authStore.loading
               }"
             >
               <div class="flex items-center justify-center">
-                <span>立即註冊</span>
-                <i class="fas fa-arrow-right ml-2"></i>
+                <span>{{ authStore.loading ? '註冊中...' : '立即註冊' }}</span>
+                <i v-if="!authStore.loading" class="fas fa-arrow-right ml-2"></i>
+                <i v-else class="fas fa-spinner fa-spin ml-2"></i>
               </div>
-              <i 
-                class="fas fa-check-circle absolute right-6 top-1/2 -translate-y-1/2 transition-all duration-500" 
-                :class="{
-                  'opacity-0': !isFormValid,
-                  'opacity-100 animate-bounce': isFormValid
-                }"
-              ></i>
             </button>
 
             <!-- 分隔線 -->
@@ -168,6 +170,12 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue'
+import { useAuthStore } from '~/stores/auth'
+import { useRouter } from '#app'
+
+const router = useRouter()
+const authStore = useAuthStore()
+const error = ref(null)
 
 const form = ref({
   email: '',
@@ -215,16 +223,23 @@ const isFormValid = computed(() => {
          form.value.password.length >= 8
 })
 
-// 處理註冊
-const handleRegister = () => {
+// 修改處理註冊函數
+const handleRegister = async () => {
   if (!isFormValid.value) return
   
-  console.log('註冊信息：', {
-    email: form.value.email,
-    password: form.value.password,
-    userType: form.value.userType
-  })
-  // TODO: 實現實際的註冊邏輯
+  try {
+    error.value = null
+    await authStore.register({
+      email: form.value.email,
+      password: form.value.password,
+      role: form.value.userType === 'passenger' ? 'customer' : 'driver'
+    })
+    
+    // 註冊成功後跳轉
+    router.push('/dashboard')
+  } catch (err) {
+    error.value = err.response?.data?.msg || '註冊失敗，請稍後再試'
+  }
 }
 </script>
 

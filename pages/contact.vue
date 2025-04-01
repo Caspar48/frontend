@@ -40,9 +40,18 @@
               </div>
               <div>
                 <h3 class="font-semibold text-gray-800">電話</h3>
-                <p class="text-gray-600">+852 4410 6368</p>
-                <p class="text-gray-600">+853 6569 9822</p>
-                <p class="text-gray-600">+86  17205937438</p>
+                <p class="text-gray-600 flex items-center gap-2">
+                  +852 4410 6368 (WhatsApp)
+                  <i class="fas fa-check text-[#53b17b]"></i>
+                </p>
+                <p class="text-gray-600 flex items-center gap-2">
+                  +853 6569 9822 (WeChat)
+                  <i class="fas fa-check text-[#53b17b]"></i>
+                </p>
+                <p class="text-gray-600 flex items-center gap-2">
+                  +86  17205937438 (WeChat)
+                  <i class="fas fa-check text-[#53b17b]"></i>
+                </p>
               </div>
           </div>
           <br>
@@ -53,7 +62,8 @@
               </div>
               <div>
                 <h3 class="font-semibold text-gray-800">地址</h3>
-                <p class="text-gray-600">珠海橫琴琴畫街D1-1110辦公室</p>
+                <p class="text-gray-600">Zhuhai Hengqin Qinhua Jie D1-1110 Office</p>
+                <p class="text-gray-500 text-sm mt-1">珠海橫琴琴畫街D1-1110辦公室</p>
               </div>
           </div>
 
